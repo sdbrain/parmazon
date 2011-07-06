@@ -20,14 +20,14 @@ from collections import defaultdict
 from xml.parsers import expat
 
 from decryptor import AmzDecryptor
- 
+
 class ParseException(Exception):
     pass
 
 
-class AmzParser(object):    
+class AmzParser(object):
     def __init__(self):
-        self.parser = None        
+        self.parser = None
         self.parsed_objects = []
         self.current_track = None
         self.in_tracklist = False
@@ -39,12 +39,12 @@ class AmzParser(object):
         self.now_tracknum = False
         self.now_filesize = False
         self.now_tracktype = False
-    
+
     def start_element(self, name, attrs):
         if name == 'trackList':
-            self.in_tracklist = True        
+            self.in_tracklist = True
         if self.in_tracklist:
-            if name == 'track':            
+            if name == 'track':
                 self.current_track = defaultdict(str)
             elif name == 'location':
                 self.now_url = True
@@ -62,8 +62,8 @@ class AmzParser(object):
                 if attrs['rel'].endswith('fileSize'):
                     self.now_filesize = True
                 elif attrs['rel'].endswith('trackType'):
-                    self.now_tracktype = True                         
-    
+                    self.now_tracktype = True
+
     def end_element(self, name):
         if name == 'trackList':
             self.in_tracklist = False
@@ -87,8 +87,8 @@ class AmzParser(object):
                     self.now_filesize = False
                 elif self.now_tracktype:
                     self.now_tracktype = False
-    
-    def character_data(self, data):        
+
+    def character_data(self, data):
         if self.now_url:
             self.current_track['url'] += data
         elif self.now_artist:
@@ -105,31 +105,31 @@ class AmzParser(object):
             self.current_track['filesize'] += data
         elif self.now_tracktype:
             self.current_track['tracktype'] += data
-        
+
     def add_track(self):
-        track = (self.current_track["url"], self.current_track["artist"], self.current_track["album"], self.current_track["title"])
+        track = (self.current_track["url"], self.current_track["album"], self.current_track["title"], self.current_track["filesize"])
         self.parsed_objects.append(track)
-     
+
     def create_new_parser(self):
         self.parser = expat.ParserCreate()
         self.parser.StartElementHandler = self.start_element
         self.parser.EndElementHandler = self.end_element
         self.parser.CharacterDataHandler = self.character_data
-        
+
     def parse(self, amz):
         amz_data = open(amz).read()
         decryptor = AmzDecryptor()
         xml = decryptor.decrypt(amz_data)
         self.create_new_parser()
-        self.parser.Parse(xml)        
-        
+        self.parser.Parse(xml)
+
     def get_parsed_objects(self):
         return self.parsed_objects
-    
+
 
 if __name__ == '__main__':
     p = AmzParser()
     p.parse("/home/fisheye/Music/c.amz")
     print len(p.parsed_objects)
-    
-        
+
+
