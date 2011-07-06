@@ -13,7 +13,7 @@ if len(sys.argv) < 2:
 
 #file name
 amz = sys.argv[1]
-base_dir = "/home/fisheye/Music/Amazon"
+base_dir = "~/Music/Amazon"
 
 #parse the amz file
 amzpar = AmzParser()
