@@ -1,0 +1,20 @@
+This is a superfast mp3 download client for amazon mp3. 
+it is under active development now. 
+
+Available features:
+1) supports retry and resume
+2) supports parallel downloads using the superfast pycurl library
+
+How to install:
+pycrypto and pycurl are the prerequsites of this tool. You can install both of these packages using pip or easy_install. 
+
+pip install pycrypto
+pip install pycurl
+
+or 
+
+easy_install pycrypto
+easy_install pycrypto
+
+
+Rest everything should work right out of the box. :) 
